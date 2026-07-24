@@ -1,0 +1,25 @@
+# Node dependencies
+node_modules/
+npm-debug.log
+yarn-error.log
+pnpm-debug.log
+
+# Next.js build output
+.next/
+out/
+build/
+
+# Rust / Cargo build output
+target/
+**/*.rs.bk
+
+# Environment variables (Crucial: keeps your API keys secure)
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# OS generated files
+.DS_Store
+Thumbs.db

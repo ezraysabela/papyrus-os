@@ -1,0 +1,147 @@
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400&family=Inter:wght@400;500;600&display=swap");
+
+:root {
+  /* Paper & ink — literary, warm, printed-page palette */
+  --paper: #f7f3ea;       
+  --paper-raised: #fbf9f3; 
+  --paper-sunken: #efe9db; 
+  --rule: #ddd4c0;        
+  --rule-strong: #c7bca3;
+  --ink: #2a2722;         
+  --ink-soft: #6b6255;    
+  --ink-faint: #a39a89;   
+  --accent: #7c7263;      
+  --accent-ink: #4a4438;  
+  --success: #4b6b4f;
+  --error: #9a4a3d;
+
+  /* --- New Literary Accents --- */
+  --red-seal: #8c2121;    /* Deep, wax-seal crimson */
+  --gold-leaf: #c5a059;   /* Antiqued gold */
+
+  --font-display: "Fraunces", Georgia, serif;
+  --font-body: "Source Serif 4", Georgia, serif;
+  --font-ui: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  margin: 0;
+}
+
+button {
+  font-family: var(--font-ui);
+}
+
+a {
+  color: var(--accent-ink);
+}
+
+::selection {
+  background: var(--rule-strong);
+  color: var(--red-seal);
+}
+
+/* Utility classes shared across pages */
+
+.label {
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.rule {
+  border: none;
+  border-top: 1px solid var(--rule);
+  margin: 0;
+}
+
+/* --- New Ornament Styling --- */
+.ornament-rule {
+  position: relative;
+  text-align: center;
+  border-top: 1px solid var(--gold-leaf);
+}
+
+.ornament-diamond {
+  position: absolute;
+  top: -5px;
+  left: 50%;
+  transform: translateX(-50%) rotate(45deg);
+  width: 9px;
+  height: 9px;
+  background-color: var(--red-seal);
+  border: 1px solid var(--paper);
+}
+
+.btn {
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  padding: 11px 22px;
+  border-radius: 3px;
+  border: 1px solid var(--gold-leaf);
+  background: var(--paper-raised);
+  color: var(--ink);
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease, color 0.15s ease;
+}
+
+.btn:hover:not(:disabled) {
+  border-color: var(--red-seal);
+  background: var(--paper-sunken);
+  color: var(--red-seal);
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background: var(--red-seal);
+  color: var(--paper);
+  border-color: var(--red-seal);
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: #6a1818;
+  border-color: #6a1818;
+}
+
+:focus-visible {
+  outline: 2px solid var(--gold-leaf);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    animation: none !important;
+  }
+}
