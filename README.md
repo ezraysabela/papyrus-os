@@ -50,7 +50,7 @@ pnpm run dev
 - Asset issuers: N/A
 
 ## Team
-- [Ezra Ysabela G. Gellecania] — @[ezra_ysabela]
+- [Ezra Ysabela G. Gellecania] — @[ezraysabela]
 
 ## License
 MIT
