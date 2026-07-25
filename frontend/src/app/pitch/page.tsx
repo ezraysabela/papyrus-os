@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { VolumeNav } from "../page";
+import { useTypewriter } from "@/hooks/useTypewriter";
 
 interface StartupConcept {
   name: string;
@@ -37,6 +38,9 @@ export default function PitchPage() {
   const [result, setResult] = useState<StoredResult | null>(null);
   const [selectedConcept, setSelectedConcept] = useState(0);
   const [copied, setCopied] = useState(false);
+  const { typed: taglineTyped, done: taglineDone } = useTypewriter(
+    "Your research, reframed as the pitch a VC actually reads."
+  );
 
   useEffect(() => {
     const raw = sessionStorage.getItem("papyrus:lastReport");
@@ -87,7 +91,8 @@ export default function PitchPage() {
           The One-Pager
         </h1>
         <p className="hero-tagline">
-          Your research, reframed as the pitch a VC actually reads.
+          {taglineTyped}
+          {!taglineDone && <span className="typewriter-cursor" />}
         </p>
       </div>
 

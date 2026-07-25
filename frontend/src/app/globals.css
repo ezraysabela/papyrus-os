@@ -370,6 +370,92 @@ a { color: var(--accent-ink); }
   margin-right: 6px;
 }
 
+.envelope-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  margin-left: 6px;
+  border-radius: 50%;
+  border: 1px solid rgba(197, 160, 89, 0.55);
+  background: rgba(197, 160, 89, 0.14);
+  color: var(--gold-leaf);
+  cursor: pointer;
+  transition: color 0.18s ease, border-color 0.18s ease, background 0.18s ease,
+    transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.18s ease;
+}
+
+.envelope-btn:hover {
+  color: var(--ink);
+  background: var(--gold-leaf);
+  border-color: var(--gold-leaf);
+  box-shadow: 0 0 0 4px rgba(197, 160, 89, 0.18);
+  transform: scale(1.1);
+}
+
+.envelope-btn.opening {
+  transform: scale(0.85) rotate(-6deg);
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(38, 34, 28, 0.55);
+  backdrop-filter: blur(2px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  z-index: 100;
+  animation: overlay-fade 0.2s ease;
+}
+
+@keyframes overlay-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal-envelope-panel {
+  position: relative;
+  max-width: 440px;
+  width: 100%;
+  background: var(--paper-raised);
+  border: 1px solid var(--rule);
+  border-top: 4px solid var(--gold-leaf);
+  border-radius: 4px 4px 10px 10px;
+  padding: 36px 32px 32px;
+  box-shadow: 0 12px 48px rgba(38, 34, 28, 0.35), var(--shadow-lift);
+  animation: envelope-open 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes envelope-open {
+  from { opacity: 0; transform: translateY(14px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.modal-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 1px solid var(--rule);
+  background: var(--paper);
+  color: var(--ink-faint);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.modal-close:hover {
+  color: var(--red-seal);
+  border-color: var(--red-seal);
+}
+
 @media (max-width: 480px) {
   .volume-tab-label { display: none; }
   .volume-tab-num { margin-right: 0; }

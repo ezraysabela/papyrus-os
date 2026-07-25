@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { VolumeNav } from "../page";
+import { useTypewriter } from "@/hooks/useTypewriter";
 
 interface RegistryEntry {
   docHash: string;
@@ -24,6 +25,9 @@ export default function RegistryPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [query, setQuery] = useState("");
+  const { typed: taglineTyped, done: taglineDone } = useTypewriter(
+    "Every manuscript timestamped on Stellar, searchable by title, hash, or researcher — an open record of prior art."
+  );
 
   useEffect(() => {
     let cancelled = false;
@@ -74,8 +78,8 @@ export default function RegistryPage() {
           The Public Ledger
         </h1>
         <p className="hero-tagline">
-          Every manuscript timestamped on Stellar, searchable by title,
-          hash, or researcher — an open record of prior art.
+          {taglineTyped}
+          {!taglineDone && <span className="typewriter-cursor" />}
         </p>
       </div>
 
