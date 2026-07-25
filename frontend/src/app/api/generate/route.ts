@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
 import crypto from "crypto";
-import { PDFParse } from "pdf-parse";
+import { extractText, getDocumentProxy } from "unpdf";
 
 export const runtime = "nodejs";
-export const maxDuration = 300; // allow up to 5 minutes for the full pipeline
+export const maxDuration = 300;
 
 interface StartupConcept {
   name: string;
@@ -42,10 +42,11 @@ export async function POST(req: Request) {
     // 1. SHA-256 hash for on-chain proof of origin.
     const docHash = crypto.createHash("sha256").update(buffer).digest("hex");
 
-    // 2. Extract text — Groq's chat models are text-only, no native PDF input.
-    const parser = new PDFParse({ data: buffer });
-    const { text: paperText } = await parser.getText();
-    await parser.destroy();
+    // 2. Extract text — unpdf avoids the pdfjs-dist canvas/DOMMatrix
+    // dependency entirely, since we only need text, not rendering.
+    const pdf = await getDocumentProxy(new Uint8Array(buffer));
+    const { text: paperText } = await extractText(pdf, { mergePages: true });
+
     if (!paperText || paperText.trim().length < 200) {
       return NextResponse.json(
         {
@@ -68,6 +69,8 @@ export async function POST(req: Request) {
     );
   }
 }
+
+// runAIPipeline stays exactly the same as before — no changes needed there.
 
 /**
  * Sends the extracted paper text to Groq (OpenAI-compatible chat completions)
