@@ -4,7 +4,7 @@ use super::*;
 use soroban_sdk::testutils::Address as _;
 use soroban_sdk::Env;
 
-fn setup(env: &Env) -> (PapyrusRegistryClient, Address) {
+fn setup(env: &Env) -> (PapyrusRegistryClient<'_>, Address) {
     let contract_id = env.register_contract(None, PapyrusRegistry);
     let client = PapyrusRegistryClient::new(env, &contract_id);
     let owner = Address::generate(env);
