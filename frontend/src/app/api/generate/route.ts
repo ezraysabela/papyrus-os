@@ -3,7 +3,7 @@ import crypto from "crypto";
 import { extractText, getDocumentProxy } from "unpdf";
 
 export const runtime = "nodejs";
-export const maxDuration = 300;
+export const maxDuration = 300; // allow up to 5 minutes for the full pipeline
 
 interface StartupConcept {
   name: string;
@@ -70,7 +70,52 @@ export async function POST(req: Request) {
   }
 }
 
-// runAIPipeline stays exactly the same as before — no changes needed there.
+/**
+ * Calls Groq's chat completions endpoint, retrying automatically if the
+ * model produces malformed JSON (a known intermittent failure mode for
+ * smaller/free-tier models under json_object mode, especially when the
+ * output contains nested quotation marks).
+ */
+async function callGroqWithRetry(
+  apiKey: string,
+  body: object,
+  retries = 2
+): Promise<any> {
+  let lastError: Error | null = null;
+
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    const response = await fetch(
+      "https://api.groq.com/openai/v1/chat/completions",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${apiKey}`,
+        },
+        body: JSON.stringify(body),
+      }
+    );
+
+    if (response.ok) {
+      return response.json();
+    }
+
+    const errText = await response.text();
+    const isJsonFailure = errText.includes("json_validate_failed");
+
+    if (isJsonFailure && attempt < retries) {
+      console.warn(
+        `Groq JSON validation failed, retrying (attempt ${attempt + 1}/${retries})`
+      );
+      lastError = new Error(`Groq API error (${response.status}): ${errText}`);
+      continue;
+    }
+
+    throw new Error(`Groq API error (${response.status}): ${errText}`);
+  }
+
+  throw lastError ?? new Error("Groq API failed after retries");
+}
 
 /**
  * Sends the extracted paper text to Groq (OpenAI-compatible chat completions)
@@ -86,9 +131,9 @@ async function runAIPipeline(
     throw new Error("GROQ_API_KEY is not configured on the server");
   }
 
-// Groq's free tier caps at 8000 tokens/minute for larger models — stay
-// well under that. ~4 chars/token is a safe rule of thumb, so cap
-// characters conservatively to leave room for the prompt + system message.
+  // Groq's free tier caps at 8000 tokens/minute for larger models — stay
+  // well under that. ~4 chars/token is a safe rule of thumb, so cap
+  // characters conservatively to leave room for the prompt + system message.
   const truncated = paperText.slice(0, 18_000);
 
   const systemPrompt = `You are Papyrus OS's commercialization analyst. You read technical/academic papers and produce investor-grade commercialization reports.
@@ -97,6 +142,7 @@ Rules:
 - Every claim in "startup_concepts" and "citations" must be traceable to the source document. Do not invent facts not present in the paper.
 - "tam_estimate" should be a range with a one-sentence justification, not a bare number.
 - ALL SIX fields below are REQUIRED and must never be omitted, even if a field is only partially known — use an empty array [] rather than dropping a field.
+- Do NOT include literal quotation marks inside any string value (e.g. in "source_excerpt" or "supporting_citation"). Paraphrase quoted material in your own words instead of quoting it directly, to avoid JSON escaping errors.
 - Respond with ONLY valid JSON matching this exact shape, no prose, no markdown fences:
 {
   "summary": string,
@@ -109,38 +155,25 @@ Rules:
 }
 Produce 3-5 startup_concepts.`;
 
-  const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${apiKey}`,
-    },
-    body: JSON.stringify({
-      model: "openai/gpt-oss-20b",
-      response_format: { type: "json_object" },
-      messages: [
-        { role: "system", content: systemPrompt },
-        {
-          role: "user",
-          content: `Paper filename: "${filename}"\n\nPaper text:\n${truncated}\n\nAnalyze this and produce the investor report JSON now.`,
-        },
-      ],
-    }),
+  const data = await callGroqWithRetry(apiKey, {
+    model: "openai/gpt-oss-20b",
+    response_format: { type: "json_object" },
+    messages: [
+      { role: "system", content: systemPrompt },
+      {
+        role: "user",
+        content: `Paper filename: "${filename}"\n\nPaper text:\n${truncated}\n\nAnalyze this and produce the investor report JSON now.`,
+      },
+    ],
   });
 
-  if (!response.ok) {
-    const errText = await response.text();
-    throw new Error(`Groq API error (${response.status}): ${errText}`);
-  }
-
-  const data = await response.json();
   const text: string | undefined = data?.choices?.[0]?.message?.content;
 
   if (!text) {
     throw new Error("No text response from model");
   }
 
-const cleaned = text.replace(/```json|```/g, "").trim();
+  const cleaned = text.replace(/```json|```/g, "").trim();
 
   try {
     const parsed = JSON.parse(cleaned);
