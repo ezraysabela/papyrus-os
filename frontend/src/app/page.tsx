@@ -66,12 +66,14 @@ export default function UploadPage() {
 
   return (
     <main style={{ minHeight: "100vh" }}>
+      <VolumeNav current="I" />
+
       {/* Bold dark hero band */}
       <div className="hero-band">
         <div style={{ display: "flex", justifyContent: "center", marginBottom: 18 }}>
           <HomeWaxSeal />
         </div>
-        <p className="hero-eyebrow">Vol. I — Research Commercialization</p>
+        <p className="hero-eyebrow">Vol. I — The Reading</p>
         <h1 className="hero-title">Papyrus OS</h1>
         <p className="hero-tagline">
           An investor's reading of your research, drawn in five minutes.
@@ -199,5 +201,36 @@ function HomeWaxSeal() {
         P
       </text>
     </svg>
+  );
+}
+
+/**
+ * Shared cross-page module switcher. Each "volume" is a distinct
+ * Papyrus OS module serving the same audience (deep-tech founders &
+ * investors), not a separate issue/edition.
+ *
+ * Drop this same component at the top of every page, passing the
+ * current volume's roman numeral.
+ */
+export function VolumeNav({ current }: { current: "I" | "II" | "III" }) {
+  const volumes: { id: "I" | "II" | "III"; label: string; href: string }[] = [
+    { id: "I", label: "The Reading", href: "/" },
+    { id: "II", label: "The Registry", href: "/registry" },
+    { id: "III", label: "The Pitch", href: "/pitch" },
+  ];
+
+  return (
+    <nav className="volume-nav">
+      {volumes.map((v) => (
+        <a
+          key={v.id}
+          href={v.href}
+          className={`volume-tab${v.id === current ? " active" : ""}`}
+        >
+          <span className="volume-tab-num">Vol. {v.id}</span>
+          <span className="volume-tab-label">{v.label}</span>
+        </a>
+      ))}
+    </nav>
   );
 }
