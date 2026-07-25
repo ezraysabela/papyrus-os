@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { VolumeNav } from "../page";
+import { VolumeNav } from "@/components/VolumeNav";
 import { useTypewriter } from "@/hooks/useTypewriter";
 
 interface RegistryEntry {
