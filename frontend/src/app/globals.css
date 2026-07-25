@@ -2,22 +2,26 @@
 
 :root {
   /* Paper & ink — literary, warm, printed-page palette */
-  --paper: #f7f3ea;       
-  --paper-raised: #fbf9f3; 
-  --paper-sunken: #efe9db; 
-  --rule: #ddd4c0;        
+  --paper: #f7f3ea;
+  --paper-raised: #fbf9f3;
+  --paper-sunken: #efe9db;
+  --rule: #ddd4c0;
   --rule-strong: #c7bca3;
-  --ink: #2a2722;         
-  --ink-soft: #6b6255;    
-  --ink-faint: #a39a89;   
-  --accent: #7c7263;      
-  --accent-ink: #4a4438;  
+  --ink: #2a2722;
+  --ink-soft: #6b6255;
+  --ink-faint: #a39a89;
+  --accent: #7c7263;
+  --accent-ink: #4a4438;
   --success: #4b6b4f;
   --error: #9a4a3d;
 
-  /* --- New Literary Accents --- */
-  --red-seal: #8c2121;    /* Deep, wax-seal crimson */
-  --gold-leaf: #c5a059;   /* Antiqued gold */
+  /* --- Literary Accents --- */
+  --red-seal: #8c2121;
+  --gold-leaf: #c5a059;
+
+  /* --- Shadow tokens for depth without heaviness --- */
+  --shadow-soft: 0 1px 2px rgba(42, 39, 34, 0.04), 0 4px 16px rgba(42, 39, 34, 0.05);
+  --shadow-lift: 0 2px 4px rgba(140, 33, 33, 0.06), 0 8px 24px rgba(42, 39, 34, 0.08);
 
   --font-display: "Fraunces", Georgia, serif;
   --font-body: "Source Serif 4", Georgia, serif;
@@ -34,7 +38,10 @@ html, body {
 }
 
 body {
-  background: var(--paper);
+  background-color: var(--paper);
+  background-image:
+    radial-gradient(circle at 1px 1px, rgba(42, 39, 34, 0.025) 1px, transparent 0);
+  background-size: 3px 3px;
   color: var(--ink);
   font-family: var(--font-body);
   font-size: 16px;
@@ -69,7 +76,7 @@ a {
   font-family: var(--font-ui);
   font-size: 11px;
   font-weight: 600;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--ink-faint);
 }
@@ -80,7 +87,7 @@ a {
   margin: 0;
 }
 
-/* --- New Ornament Styling --- */
+/* --- Ornament Styling --- */
 .ornament-rule {
   position: relative;
   text-align: center;
@@ -102,31 +109,41 @@ a {
   font-family: var(--font-ui);
   font-size: 13px;
   font-weight: 500;
-  letter-spacing: 0.01em;
-  padding: 11px 22px;
-  border-radius: 3px;
+  letter-spacing: 0.03em;
+  padding: 12px 24px;
+  border-radius: 4px;
   border: 1px solid var(--gold-leaf);
   background: var(--paper-raised);
   color: var(--ink);
   cursor: pointer;
-  transition: border-color 0.15s ease, background 0.15s ease, color 0.15s ease;
+  box-shadow: var(--shadow-soft);
+  transition: border-color 0.18s ease, background 0.18s ease, color 0.18s ease,
+    box-shadow 0.18s ease, transform 0.1s ease;
 }
 
 .btn:hover:not(:disabled) {
   border-color: var(--red-seal);
   background: var(--paper-sunken);
   color: var(--red-seal);
+  box-shadow: var(--shadow-lift);
+  transform: translateY(-1px);
+}
+
+.btn:active:not(:disabled) {
+  transform: translateY(0);
 }
 
 .btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+  box-shadow: none;
 }
 
 .btn-primary {
   background: var(--red-seal);
   color: var(--paper);
   border-color: var(--red-seal);
+  box-shadow: 0 2px 4px rgba(140, 33, 33, 0.15), 0 8px 20px rgba(140, 33, 33, 0.12);
 }
 
 .btn-primary:hover:not(:disabled) {
@@ -137,6 +154,384 @@ a {
 :focus-visible {
   outline: 2px solid var(--gold-leaf);
   outline-offset: 2px;
+}
+
+/* --- Upload plate --- */
+.upload-plate {
+  position: relative;
+  display: block;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  padding: 48px 32px;
+  text-align: center;
+  cursor: pointer;
+  background: var(--paper-raised);
+  box-shadow: var(--shadow-soft);
+  margin: 18px 0 24px;
+  transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease,
+    transform 0.1s ease;
+}
+
+/* Scroll rods — top and bottom dowels with finial knobs, so the plate
+   reads as an unrolled sheet of papyrus rather than a plain card. */
+.upload-plate::before,
+.upload-plate::after {
+  content: "";
+  position: absolute;
+  left: -16px;
+  right: -16px;
+  height: 11px;
+  border-radius: 6px;
+  background:
+    radial-gradient(circle at 5.5px 5.5px, var(--accent-ink) 4.5px, transparent 5px) left center / 11px 11px no-repeat,
+    radial-gradient(circle at 5.5px 5.5px, var(--accent-ink) 4.5px, transparent 5px) right center / 11px 11px no-repeat,
+    linear-gradient(var(--gold-leaf), var(--gold-leaf));
+}
+
+.upload-plate::before {
+  top: -10px;
+}
+
+.upload-plate::after {
+  bottom: -10px;
+}
+
+.upload-plate:hover {
+  border-color: var(--gold-leaf);
+  box-shadow: var(--shadow-lift);
+}
+
+.upload-plate:focus-within {
+  outline: 2px solid var(--gold-leaf);
+  outline-offset: 3px;
+}
+
+.upload-plate.dragging {
+  border-color: var(--red-seal);
+  background: var(--paper-sunken);
+  box-shadow: 0 0 0 1px var(--red-seal), var(--shadow-lift);
+}
+
+.upload-plate.busy {
+  cursor: not-allowed;
+  box-shadow: none;
+  opacity: 0.7;
+}
+
+.upload-plate.busy:hover {
+  border-color: var(--rule);
+}
+
+/* --- Icon badge --- */
+.icon-badge {
+  width: 46px;
+  height: 46px;
+  margin: 0 auto 18px;
+  border-radius: 50%;
+  border: 1px solid var(--rule-strong);
+  background: var(--paper);
+  box-shadow: inset 0 1px 2px rgba(42, 39, 34, 0.06);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.2s ease;
+}
+
+.upload-plate:hover .icon-badge {
+  border-color: var(--gold-leaf);
+}
+
+/* --- Error banner --- */
+.error-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  border: 1px solid rgba(154, 74, 61, 0.3);
+  background: #f8ece9;
+  border-radius: 5px;
+  padding: 14px 18px;
+  margin-top: 18px;
+  box-shadow: var(--shadow-soft);
+}
+
+.error-banner p {
+  margin: 0;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  color: var(--red-seal);
+  line-height: 1.5;
+}
+
+/* --- Wallet status pill --- */
+.wallet-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-ui);
+  font-size: 11.5px;
+  letter-spacing: 0.03em;
+  color: var(--accent-ink);
+  background: transparent;
+  border: 1px solid var(--rule-strong);
+  border-radius: 20px;
+  padding: 6px 14px;
+  box-shadow: var(--shadow-soft);
+}
+
+.wallet-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--success);
+  box-shadow: 0 0 0 3px rgba(75, 107, 79, 0.12);
+}
+
+.install-warning {
+  font-family: var(--font-ui);
+  font-size: 12px;
+  letter-spacing: 0.01em;
+  color: var(--ink-soft);
+  border: 1px solid var(--rule);
+  border-radius: 5px;
+  padding: 11px 16px;
+  margin-bottom: 16px;
+  line-height: 1.6;
+  background: var(--paper-sunken);
+}
+
+/* --- Site chrome: running head + closing rule, present on every page --- */
+
+.site-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 22px 24px 18px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.site-header-mark {
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ink);
+  text-decoration: none;
+  letter-spacing: -0.01em;
+}
+
+.site-header-mark:hover {
+  color: var(--red-seal);
+}
+
+.site-header-vol {
+  font-family: var(--font-ui);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.site-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 28px 24px 40px;
+  font-family: var(--font-ui);
+  font-size: 11px;
+  color: var(--ink-faint);
+}
+
+.site-footer-dot {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--rule-strong);
+  flex-shrink: 0;
+}
+
+@media (max-width: 540px) {
+  .site-header-vol {
+    display: none;
+  }
+}
+
+/* --- Drop cap — illuminated first letter, used once per reading (the summary) --- */
+
+.drop-cap::first-letter {
+  font-family: var(--font-display);
+  font-size: 3.4em;
+  font-weight: 500;
+  float: left;
+  line-height: 0.85;
+  padding: 4px 8px 0 0;
+  color: var(--red-seal);
+}
+
+/* --- Table of contents — sticky sidebar navigation for the dashboard --- */
+
+.toc {
+  position: sticky;
+  top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.toc a {
+  font-family: var(--font-ui);
+  font-size: 12.5px;
+  color: var(--ink-faint);
+  text-decoration: none;
+  padding: 6px 0 6px 14px;
+  border-left: 1px solid var(--rule);
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.toc a:hover {
+  color: var(--red-seal);
+  border-left-color: var(--red-seal);
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 160px minmax(0, 1fr);
+  gap: 48px;
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 48px 24px 96px;
+}
+
+@media (max-width: 760px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+  .toc {
+    display: none;
+  }
+}
+
+/* --- How it works — numbered sequence on the upload page --- */
+
+.how-it-works {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.how-step {
+  text-align: center;
+}
+
+.how-step-num {
+  width: 26px;
+  height: 26px;
+  margin: 0 auto 10px;
+  border-radius: 50%;
+  border: 1px solid var(--rule-strong);
+  background: var(--paper);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: 12px;
+  color: var(--ink-soft);
+}
+
+.how-step p {
+  margin: 0;
+}
+
+.how-step-title {
+  font-family: var(--font-ui);
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--ink);
+  margin-bottom: 3px !important;
+}
+
+.how-step-desc {
+  font-family: var(--font-ui);
+  font-size: 11.5px;
+  color: var(--ink-faint);
+  line-height: 1.5;
+}
+
+@media (max-width: 540px) {
+  .how-it-works {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+
+/* --- Typewriter — used once, on the masthead tagline --- */
+
+.typewriter-cursor {
+  display: inline-block;
+  width: 1px;
+  height: 0.95em;
+  background: var(--red-seal);
+  margin-left: 2px;
+  vertical-align: -0.1em;
+  animation: typewriter-blink 0.9s step-end infinite;
+}
+
+@keyframes typewriter-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* --- Wax seal — the colophon's mark of record --- */
+
+.wax-seal {
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.wax-seal.pressed {
+  animation: wax-stamp 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes wax-stamp {
+  0% { transform: scale(1.5); opacity: 0; }
+  60% { transform: scale(0.92); opacity: 1; }
+  100% { transform: scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .typewriter-cursor {
+    animation: none;
+  }
+  .wax-seal.pressed {
+    animation: none;
+  }
+}
+
+@keyframes pulse-seal {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.55; }
+}
+
+.pulse {
+  animation: pulse-seal 1.6s ease-in-out infinite;
+}
+
+@keyframes ink-drip {
+  0%, 100% { transform: translateY(0); opacity: 0.9; }
+  50% { transform: translateY(3px); opacity: 0.5; }
+}
+
+.ink-drop {
+  animation: ink-drip 1.4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ink-drop {
+    animation: none;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
