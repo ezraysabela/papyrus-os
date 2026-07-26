@@ -33,12 +33,12 @@ git clone https://github.com/your-username/papyrus-os.git
 cd papyrus-os/frontend
 pnpm install
 
-# Create your local environment file:
+Create your local environment file:
 cp .env.example .env.local
 
-# Environment variables needed in .env.local:
-#   GROQ_API_KEY=your_groq_api_key
-#   NEXT_PUBLIC_REGISTRY_CONTRACT_ID=your_deployed_contract_id
+Environment variables needed in .env.local:
+GROQ_API_KEY=your_groq_api_key
+NEXT_PUBLIC_REGISTRY_CONTRACT_ID=your_deployed_contract_id
 
 pnpm run dev
 \`\`\`
@@ -50,7 +50,7 @@ pnpm run dev
 - Asset issuers: N/A
 
 ## Team
-- [Ezra Ysabela G. Gellecania] — @[ezraysabela]
+Ezra Ysabela G. Gellecania — @ezraysabela
 
 ## License
 MIT
