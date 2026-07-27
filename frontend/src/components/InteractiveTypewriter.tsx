@@ -2,18 +2,26 @@
 
 import { useCallback, useRef, useState } from "react";
 
+const ROWS = [
+  ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"],
+  ["A", "S", "D", "F", "G", "H", "J", "K", "L"],
+  ["Z", "X", "C", "V", "B", "N", "M"],
+];
+
 /**
- * An actual interactive typewriter — click the paper and type.
- * Each keystroke triggers a short procedural "clack" via Web Audio
- * (no audio files needed) and a brief strike animation on the
- * decorative machine body underneath.
+ * An actual interactive typewriter — click the paper and type on your
+ * keyboard, or click the on-screen keys directly. Both paths run through
+ * the same insert/strike/clack logic so the experience is identical
+ * either way.
  */
 export function InteractiveTypewriter() {
   const [text, setText] = useState("");
   const [striking, setStriking] = useState(false);
-  const editableRef = useRef<HTMLDivElement>(null);
+  const [pressedKey, setPressedKey] = useState<string | null>(null);
+  const hiddenInputRef = useRef<HTMLTextAreaElement>(null);
   const audioCtxRef = useRef<AudioContext | null>(null);
   const strikeTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const pressTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const playClack = useCallback(() => {
     try {
@@ -38,17 +46,49 @@ export function InteractiveTypewriter() {
     }
   }, []);
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+  const strike = useCallback(() => {
+    playClack();
+    setStriking(true);
+    if (strikeTimeout.current) clearTimeout(strikeTimeout.current);
+    strikeTimeout.current = setTimeout(() => setStriking(false), 90);
+  }, [playClack]);
+
+  /** Single source of truth for all text mutations, whether they come
+   * from the on-screen keys or the physical keyboard. */
+  const insert = useCallback(
+    (value: string) => {
+      strike();
+      setText((prev) => {
+        if (value === "\u232B") return prev.slice(0, -1); // backspace glyph
+        return prev + value;
+      });
+    },
+    [strike]
+  );
+
+  const handleKeyClick = (label: string) => {
+    setPressedKey(label);
+    if (pressTimeout.current) clearTimeout(pressTimeout.current);
+    pressTimeout.current = setTimeout(() => setPressedKey(null), 120);
+
+    if (label === "SPACE") insert(" ");
+    else if (label === "⌫") insert("\u232B");
+    else if (label === "⏎") insert("\n");
+    else insert(label.toLowerCase());
+
+    hiddenInputRef.current?.focus();
+  };
+
+  // Physical keyboard: mirror every keystroke into the same strike()
+  // path so paper + sound + strike animation stay in sync with clicked keys.
+  const handleTextareaKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key.length === 1 || e.key === "Backspace" || e.key === "Enter") {
-      playClack();
-      setStriking(true);
-      if (strikeTimeout.current) clearTimeout(strikeTimeout.current);
-      strikeTimeout.current = setTimeout(() => setStriking(false), 90);
+      strike();
     }
   };
 
-  const handleInput = (e: React.FormEvent<HTMLDivElement>) => {
-    setText(e.currentTarget.textContent ?? "");
+  const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setText(e.target.value);
   };
 
   return (
@@ -57,20 +97,29 @@ export function InteractiveTypewriter() {
         Draft a Note
       </p>
 
-      <div className="typewriter-paper" onClick={() => editableRef.current?.focus()}>
-        <div
-          ref={editableRef}
-          className="typewriter-text"
-          contentEditable
-          suppressContentEditableWarning
-          onInput={handleInput}
-          onKeyDown={handleKeyDown}
-          role="textbox"
+      <div className="typewriter-paper" onClick={() => hiddenInputRef.current?.focus()}>
+        {/* Real, focusable input capturing physical typing — visually hidden but functional */}
+        <textarea
+          ref={hiddenInputRef}
+          value={text}
+          onChange={handleTextareaChange}
+          onKeyDown={handleTextareaKeyDown}
           aria-label="Typewriter notepad"
+          style={{
+            position: "absolute",
+            opacity: 0,
+            width: 1,
+            height: 1,
+            pointerEvents: "none",
+          }}
         />
+        <div className="typewriter-text">
+          {text || null}
+          <span className="typewriter-caret" />
+        </div>
         {text.length === 0 && (
           <p className="typewriter-placeholder" style={{ marginTop: -96, paddingTop: 2 }}>
-            Click here and start typing…
+            Start typing…
           </p>
         )}
       </div>
@@ -81,6 +130,47 @@ export function InteractiveTypewriter() {
       </div>
       <div className={`typewriter-body${striking ? " striking" : ""}`}>
         <span className="typewriter-body-label">PAPYRUS</span>
+      </div>
+
+      {/* Actual clickable keyboard */}
+      <div className="typewriter-keyboard">
+        {ROWS.map((row, i) => (
+          <div className="typewriter-key-row" key={i}>
+            {row.map((k) => (
+              <button
+                key={k}
+                type="button"
+                className={`typewriter-key${pressedKey === k ? " key-pressed" : ""}`}
+                onClick={() => handleKeyClick(k)}
+              >
+                {k}
+              </button>
+            ))}
+          </div>
+        ))}
+        <div className="typewriter-key-row">
+          <button
+            type="button"
+            className={`typewriter-key typewriter-key-wide${pressedKey === "⌫" ? " key-pressed" : ""}`}
+            onClick={() => handleKeyClick("⌫")}
+          >
+            back
+          </button>
+          <button
+            type="button"
+            className={`typewriter-key typewriter-key-space${pressedKey === "SPACE" ? " key-pressed" : ""}`}
+            onClick={() => handleKeyClick("SPACE")}
+          >
+            space
+          </button>
+          <button
+            type="button"
+            className={`typewriter-key typewriter-key-wide typewriter-key-accent${pressedKey === "⏎" ? " key-pressed" : ""}`}
+            onClick={() => handleKeyClick("⏎")}
+          >
+            return
+          </button>
+        </div>
       </div>
 
       <p className="typewriter-hint">A place to think before you upload.</p>

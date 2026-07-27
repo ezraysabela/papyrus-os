@@ -569,6 +569,73 @@ a { color: var(--accent-ink); }
   letter-spacing: 0.03em;
 }
 
+.typewriter-keyboard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  margin-top: 20px;
+  padding: 16px 14px 14px;
+  background: linear-gradient(180deg, var(--paper-sunken), var(--paper));
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  box-shadow: var(--shadow-soft);
+}
+
+.typewriter-key-row {
+  display: flex;
+  gap: 5px;
+}
+
+.typewriter-key {
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 600;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid var(--rule-strong);
+  background: var(--paper-raised);
+  color: var(--ink);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 0 var(--rule-strong), var(--shadow-soft);
+  transition: transform 0.08s ease, box-shadow 0.08s ease, border-color 0.15s ease;
+  user-select: none;
+}
+
+.typewriter-key:hover {
+  border-color: var(--gold-leaf);
+}
+
+.typewriter-key:active,
+.typewriter-key.key-pressed {
+  transform: translateY(2px);
+  box-shadow: 0 0 0 var(--rule-strong), var(--shadow-soft);
+}
+
+.typewriter-key-wide {
+  width: auto;
+  padding: 0 16px;
+  border-radius: 14px;
+  font-size: 10.5px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.typewriter-key-space {
+  width: 160px;
+  border-radius: 14px;
+}
+
+.typewriter-key-accent {
+  border-color: var(--red-seal);
+  color: var(--red-seal);
+}
+
 /* --- Concept card lift (dashboard) --- */
 .concept-card {
   position: relative;
