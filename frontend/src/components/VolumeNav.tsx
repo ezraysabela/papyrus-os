@@ -2,7 +2,10 @@
 
 import { useState } from "react";
 
-const VOLUME_INFO: Record<"I" | "II" | "III", { title: string; body: string }> = {
+const VOLUME_INFO: Record<
+  "I" | "II" | "III",
+  { title: string; body: string }
+> = {
   I: {
     title: "Vol. I — The Reading",
     body:

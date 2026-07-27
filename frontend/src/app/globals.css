@@ -461,6 +461,114 @@ a { color: var(--accent-ink); }
   .volume-tab-num { margin-right: 0; }
 }
 
+/* --- Interactive typewriter --- */
+.typewriter-wrap {
+  max-width: 460px;
+  margin: 0 auto;
+}
+
+.typewriter-rollers {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 14px;
+  position: relative;
+  z-index: 1;
+}
+
+.typewriter-roller {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--accent-ink);
+  border: 3px solid var(--paper-sunken);
+  flex-shrink: 0;
+  transform: translateY(11px);
+}
+
+.typewriter-paper {
+  position: relative;
+  min-height: 140px;
+  background: var(--paper-raised);
+  border: 1px solid var(--rule);
+  border-radius: 3px 3px 8px 8px;
+  padding: 22px 24px;
+  box-shadow: var(--shadow-soft), inset 0 -30px 40px -30px rgba(42, 39, 34, 0.06);
+  cursor: text;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.typewriter-paper:focus-within {
+  border-color: var(--gold-leaf);
+  box-shadow: var(--shadow-lift), inset 0 -30px 40px -30px rgba(42, 39, 34, 0.06);
+}
+
+.typewriter-text {
+  font-family: "Courier New", "Courier", monospace;
+  font-size: 15px;
+  line-height: 1.8;
+  color: var(--ink);
+  white-space: pre-wrap;
+  word-break: break-word;
+  min-height: 96px;
+  outline: none;
+}
+
+.typewriter-placeholder {
+  color: var(--ink-faint);
+  font-style: italic;
+  font-family: var(--font-body);
+  pointer-events: none;
+}
+
+.typewriter-caret {
+  display: inline-block;
+  width: 8px;
+  height: 1.1em;
+  background: var(--red-seal);
+  vertical-align: text-bottom;
+  animation: typewriter-blink 0.9s step-end infinite;
+}
+
+.typewriter-body {
+  height: 30px;
+  margin: 0 6px;
+  background: linear-gradient(180deg, var(--accent-ink), var(--ink));
+  border-radius: 0 0 10px 10px;
+  box-shadow: var(--shadow-soft);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.typewriter-body.striking {
+  animation: typewriter-strike 0.09s ease;
+}
+
+@keyframes typewriter-strike {
+  0% { transform: translateY(0); }
+  40% { transform: translateY(1px); }
+  100% { transform: translateY(0); }
+}
+
+.typewriter-body-label {
+  font-family: var(--font-ui);
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: var(--gold-leaf);
+  opacity: 0.7;
+}
+
+.typewriter-hint {
+  text-align: center;
+  font-family: var(--font-ui);
+  font-size: 11px;
+  color: var(--ink-faint);
+  margin-top: 14px;
+  letter-spacing: 0.03em;
+}
+
 /* --- Concept card lift (dashboard) --- */
 .concept-card {
   position: relative;

@@ -4,6 +4,7 @@ import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useFreighter } from "@/hooks/useFreighter";
 import { useTypewriter } from "@/hooks/useTypewriter";
+import { InteractiveTypewriter } from "@/components/InteractiveTypewriter";
 import { VolumeNav } from "@/components/VolumeNav";
 
 type Stage = "idle" | "analyzing" | "ready" | "attesting" | "done" | "error";
@@ -177,6 +178,12 @@ export default function UploadPage() {
             <p>{errorMsg}</p>
           </div>
         )}
+
+        <div className="ornament-rule" style={{ margin: "48px 0 36px" }}>
+          <span className="ornament-diamond" />
+        </div>
+
+        <InteractiveTypewriter />
       </div>
     </main>
   );
@@ -209,4 +216,3 @@ function HomeWaxSeal() {
     </svg>
   );
 }
-
