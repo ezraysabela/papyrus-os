@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useFreighter } from "@/hooks/useFreighter";
 import { PapyrusRegistryClient } from "../../../packages/papyrus_registry";
+import { VolumeNav } from "@/components/VolumeNav";
 
 interface StartupConcept {
   name: string;
@@ -85,24 +86,33 @@ export default function DashboardPage() {
 
   if (!result) {
     return (
-      <main style={{ maxWidth: 640, margin: "0 auto", padding: "96px 24px", textAlign: "center" }}>
-        <div className="icon-badge" style={{ margin: "0 auto 20px" }}>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-            <path
-              d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
-              stroke="var(--gold-leaf)"
-              strokeWidth="1.3"
-              strokeLinejoin="round"
-            />
-            <path d="M14 2v6h6" stroke="var(--gold-leaf)" strokeWidth="1.3" strokeLinejoin="round" />
-          </svg>
+      <main style={{ minHeight: "100vh" }}>
+        <VolumeNav current="I" />
+        <div style={{ maxWidth: 640, margin: "0 auto", padding: "96px 24px", textAlign: "center" }}>
+          <div className="icon-badge" style={{ margin: "0 auto 20px" }}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                stroke="var(--gold-leaf)"
+                strokeWidth="1.3"
+                strokeLinejoin="round"
+              />
+              <path d="M14 2v6h6" stroke="var(--gold-leaf)" strokeWidth="1.3" strokeLinejoin="round" />
+            </svg>
+          </div>
+          <p style={{ fontFamily: "var(--font-display)", fontSize: 20, color: "var(--red-seal)" }}>
+            No manuscript loaded.
+          </p>
+          <p style={{ fontFamily: "var(--font-ui)", fontSize: 14, color: "var(--ink-faint)", marginTop: 8, marginBottom: 24 }}>
+            Return to the front page and upload a white paper first.
+          </p>
+          <a href="/" className="btn btn-primary" style={{ display: "inline-flex", alignItems: "center", gap: 8, textDecoration: "none" }}>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
+              <path d="M19 12H5M11 18l-6-6 6-6" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+            Back to Vol. I
+          </a>
         </div>
-        <p style={{ fontFamily: "var(--font-display)", fontSize: 20, color: "var(--red-seal)" }}>
-          No manuscript loaded.
-        </p>
-        <p style={{ fontFamily: "var(--font-ui)", fontSize: 14, color: "var(--ink-faint)", marginTop: 8 }}>
-          Return to the front page and upload a white paper first.
-        </p>
       </main>
     );
   }
@@ -120,16 +130,39 @@ export default function DashboardPage() {
   ].filter(Boolean) as { id: string; label: string }[];
 
   return (
-    <div className="dashboard-grid">
-      <nav className="toc">
-        {tocItems.map((item) => (
-          <a key={item.id} href={`#${item.id}`}>
-            {item.label}
-          </a>
-        ))}
-      </nav>
+    <main style={{ minHeight: "100vh" }}>
+      <VolumeNav current="I" />
 
-      <main style={{ maxWidth: 680 }}>
+      <div className="dashboard-grid">
+        <nav className="toc">
+          <a
+            href="/"
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 6,
+              marginBottom: 14,
+              paddingLeft: 14,
+              fontFamily: "var(--font-ui)",
+              fontSize: 12,
+              color: "var(--red-seal)",
+              textDecoration: "none",
+              fontWeight: 600,
+            }}
+          >
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none">
+              <path d="M19 12H5M11 18l-6-6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+            Vol. I
+          </a>
+          {tocItems.map((item) => (
+            <a key={item.id} href={`#${item.id}`}>
+              {item.label}
+            </a>
+          ))}
+        </nav>
+
+        <main style={{ maxWidth: 680 }}>
         {/* Masthead */}
         <p className="label" style={{ marginBottom: 8, color: "var(--red-seal)" }}>{fileName}</p>
         <h1 style={{ fontSize: 38, marginBottom: 14, letterSpacing: "-0.015em" }}>Investor Reading</h1>
@@ -406,7 +439,8 @@ export default function DashboardPage() {
           </div>
         </Section>
       </main>
-    </div>
+      </div>
+    </main>
   );
 }
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useFreighter } from "@/hooks/useFreighter";
 import { useTypewriter } from "@/hooks/useTypewriter";
@@ -21,6 +21,11 @@ export default function UploadPage() {
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [fileName, setFileName] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [hasExistingReport, setHasExistingReport] = useState(false);
+
+  useEffect(() => {
+    setHasExistingReport(!!sessionStorage.getItem("papyrus:lastReport"));
+  }, []);
 
   const handleUpload = async (file: File) => {
     if (file.type !== "application/pdf") {
@@ -112,6 +117,28 @@ export default function UploadPage() {
             </p>
           )}
         </div>
+
+        {hasExistingReport && (
+          <div style={{ textAlign: "center", marginBottom: 24 }}>
+            <a
+              href="/dashboard"
+              className="btn"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 8,
+                textDecoration: "none",
+                color: "var(--teal-pop)",
+                borderColor: "rgba(31, 111, 102, 0.4)",
+              }}
+            >
+              View Last Reading
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
+                <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </a>
+          </div>
+        )}
 
         {/* Upload plate */}
         <label
